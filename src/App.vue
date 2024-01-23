@@ -68,8 +68,8 @@ export default {
 
     view() {
       this.inView = true;
-      this.drawCanvasImage(this.images[this.cureImage]);
       this.$refs.main.requestFullscreen();
+      this.drawCanvasImage(this.images[this.cureImage]);
     },
 
     outFull() {
@@ -111,13 +111,20 @@ export default {
 
     drawCanvasImage(img) {
       let canvas = this.$refs.imageCanvas;
+      canvas.width = window.screen.width;
+      canvas.height = window.screen.height;
       let hRatio = canvas.width / img.width;
       let vRatio = canvas.height / img.height;
       let ratio = Math.min(hRatio, vRatio);
       let ctx = canvas.getContext("2d");
-
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      console.log(
+        window.innerWidth,
+        window.innerHeight,
+        canvas.width,
+        canvas.height,
+        img.width,
+        img.height
+      );
 
       switch (this.selected) {
         case "fit":
@@ -163,12 +170,6 @@ export default {
 <style>
 .display_none {
   display: none;
-}
-
-#imageCanvas {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 button {
