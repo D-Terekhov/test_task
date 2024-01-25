@@ -10,33 +10,33 @@ export const useImageStore = defineStore('imageStore', {
     getters: {
         countOfImages: (state) => state.images.length
     },
-    action: {
+    actions: {
       createDB() {
         console.log('create')
-        // let openRequest = indexedDB.open('imageDB', 1);
-        // openRequest.onupgradeneeded = function() {
-        //   console.log('onupgradeneeded');
+        let openRequest = indexedDB.open('imageDB', 1);
+        openRequest.onupgradeneeded = function() {
+          console.log('onupgradeneeded');
       
-        //   let db = openRequest.result;
-        //   if (!db.objectStoreNames.contains('Fit')) { 
-        //       db.createObjectStore('Fit', {autoIncrement: true}); 
-        //       console.log('adas');
-        //   }
-        // };  
+          let db = openRequest.result;
+          if (!db.objectStoreNames.contains('Fit')) { 
+              db.createObjectStore('Fit', {autoIncrement: true}); 
+              console.log('adas');
+          }
+        };  
         
-        // openRequest.onerror = function() {
-        //   console.error("Error", openRequest.error);
-        // };
+        openRequest.onerror = function() {
+          console.error("Error", openRequest.error);
+        };
         
-        // openRequest.onsuccess = function() {
-        //   let db = openRequest.result;
-        //   console.log("asdad")
-        // }
+        openRequest.onsuccess = function() {
+          let db = openRequest.result;
+          console.log("asdad")
+        }
       } 
     }
    });
 
-// indexedDB.deleteDatabase('imageDB')   
+//indexedDB.deleteDatabase('imageDB')   
 
 // let openRequest = indexedDB.open('imageDB', 1);
 
