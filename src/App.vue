@@ -30,6 +30,7 @@
 import { mapState, mapWritableState } from "pinia";
 import { mapActions } from "pinia";
 import { useImageStore } from "./stores/ImageStore";
+import { loadImage } from "./utils";
 
 export default {
   data() {
@@ -47,10 +48,12 @@ export default {
     ]),
   },
 
-  // methods: {
-  //     ...mapActions(useImageStore, ['increment','uploadImage']),
-
   methods: {
+    ...mapActions(useImageStore, ["createDB"]),
+    // createDB() {
+    //   this.createDB;
+    //   console.log("asdasd");
+    // },
     next() {
       this.cureImage++;
       if (this.cureImage > this.countOfImages - 1) {
@@ -87,26 +90,14 @@ export default {
       }
     },
 
-    loadImage(file) {
-      return new Promise((resolve, reject) => {
-        console.log(file);
-        let reader = new FileReader();
-        reader.addEventListener("load", function (e) {
-          let img = new Image();
-          img.src = e.target.result;
-          resolve(img);
-        });
-        reader.readAsDataURL(file);
-      });
-    },
-
     async arrayImageLoader(e) {
       this.cureImage = 0;
       this.images = [];
       let files = e.target.files;
       for (let i of files) {
-        this.images.push(await this.loadImage(i));
+        this.images.push(await loadImage(i));
       }
+      console.log(this.images);
     },
 
     drawCanvasImage(img) {
@@ -163,6 +154,10 @@ export default {
           break;
       }
     },
+  },
+  mounted() {
+    this.createDB;
+    console.log("asdasd");
   },
 };
 </script>
