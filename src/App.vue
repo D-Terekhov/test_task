@@ -156,7 +156,7 @@ export default {
     },
   },
   mounted() {
-    this.createDB;
+    this.createDB();
     console.log("asdasd");
   },
 };
