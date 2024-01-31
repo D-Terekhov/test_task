@@ -13,14 +13,16 @@
       <button @click="next" v-if="inView">Next</button>
       <button @click="outFull" v-if="inView">Выйти</button>
       <button @click="view" v-else>Просмотр</button>
+      <button @click="check">Чек</button>
 
       <div id="select">
-        <select v-model="this.selected">
+        <select v-model="this.selected" @change="changeSelect">
           <option value="fit">Вписать</option>
           <option value="fitVert">Вписать по вертикали</option>
           <option value="fitHor">Вписать по горизонтали</option>
           <option value="default">1:1</option>
         </select>
+        {{ this.selected }}
       </div>
     </div>
   </div>
@@ -49,11 +51,14 @@ export default {
   },
 
   methods: {
-    ...mapActions(useImageStore, ["createDB"]),
+    ...mapActions(useImageStore, ["createDB", "insertFit", "loadFit"]),
     // createDB() {
     //   this.createDB;
     //   console.log("asdasd");
     // },
+    changeSelect() {
+      this.insertFit(this.selected);
+    },
     next() {
       this.cureImage++;
       if (this.cureImage > this.countOfImages - 1) {
@@ -126,6 +131,7 @@ export default {
             img.width * ratio,
             img.height * ratio
           );
+          console.log("insertfit");
           break;
         case "fitVert":
           ctx.drawImage(
@@ -154,10 +160,13 @@ export default {
           break;
       }
     },
+    check() {
+      console.log(this.selected);
+    },
   },
   mounted() {
     this.createDB();
-    console.log("asdasd");
+    this.loadFit();
   },
 };
 </script>

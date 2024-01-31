@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 export const useImageStore = defineStore('imageStore', {
     state: () => ({
         images: [],
-        selected: 'Fit',
+        selected: "fit",
         cureImage: 0
     }),
     getters: {
@@ -12,6 +12,7 @@ export const useImageStore = defineStore('imageStore', {
     },
     actions: {
       createDB() {
+        
         console.log('create')
         let openRequest = indexedDB.open('imageDB', 1);
         openRequest.onupgradeneeded = function() {
@@ -19,7 +20,7 @@ export const useImageStore = defineStore('imageStore', {
       
           let db = openRequest.result;
           if (!db.objectStoreNames.contains('Fit')) { 
-              db.createObjectStore('Fit', {autoIncrement: true}); 
+              db.createObjectStore('Fit'); 
               console.log('adas');
           }
         };  
@@ -32,11 +33,47 @@ export const useImageStore = defineStore('imageStore', {
           let db = openRequest.result;
           console.log("asdad")
         }
-      } 
+      },
+      insertFit(fit) {
+        let openRequest = indexedDB.open('imageDB', 1);
+        openRequest.onsuccess = function() {
+          let db = openRequest.result;
+          console.log("asdad")
+        
+          const txn = db.transaction('Fit', 'readwrite');
+          const store = txn.objectStore('Fit');
+          
+          store.clear();
+
+          let query = store.put(fit, 'fit');
+          query.onsuccess = (e) => console.log(e);
+
+          txn.oncomplete = function() {
+            db.close();
+          }
+        }
+      },
+      loadFit() {
+        let openRequest = indexedDB.open('imageDB', 1);
+        openRequest.onsuccess = function() {
+        let db = openRequest.result;
+        const txn = db.transaction('Fit', 'readwrite');
+        const store = txn.objectStore('Fit');
+        console.log("loadFit");
+        let request = store.get('fit');
+        request.onsuccess = function() {
+          this.selected = request.result;
+          console.log(request.result);
+          console.log(this.selected);
+        }
+          
+
+        }    
+      }
     }
    });
 
-//indexedDB.deleteDatabase('imageDB')   
+ //indexedDB.deleteDatabase('imageDB')   
 
 // let openRequest = indexedDB.open('imageDB', 1);
 
