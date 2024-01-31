@@ -47,6 +47,7 @@ export default {
       "images",
       "countOfImages",
       "cureImage",
+      "selectFit",
     ]),
   },
 

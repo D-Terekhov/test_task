@@ -55,13 +55,13 @@ export const useImageStore = defineStore('imageStore', {
       },
       loadFit() {
         let openRequest = indexedDB.open('imageDB', 1);
-        openRequest.onsuccess = function() {
+        openRequest.onsuccess = () => {
         let db = openRequest.result;
         const txn = db.transaction('Fit', 'readwrite');
         const store = txn.objectStore('Fit');
         console.log("loadFit");
         let request = store.get('fit');
-        request.onsuccess = function() {
+        request.onsuccess = () => {
           this.selected = request.result;
           console.log(request.result);
           console.log(this.selected);
