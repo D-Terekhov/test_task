@@ -6,7 +6,8 @@ export const useImageStore = defineStore('imageStore', {
     state: () => ({
         images: [],
         selected: "fit",
-        cureImage: 0
+        cureImage: 0,
+        storeImagesCount: 0
     }),
     getters: {
         countOfImages: (state) => state.images.length
@@ -83,7 +84,7 @@ export const useImageStore = defineStore('imageStore', {
       },
       clearImgStore() {
         let openRequest = indexedDB.open('imageDB', 1);
-        openRequest.onsuccess = async () => {
+        openRequest.onsuccess = () => {
           let db = openRequest.result;
           const txn = db.transaction('Images', 'readwrite');
           const store = txn.objectStore('Images');
@@ -92,25 +93,54 @@ export const useImageStore = defineStore('imageStore', {
         }
         
       },
-      loadImagesFromBd() {
+
+      // storeImagesCount() {
+      //   let openRequest = indexedDB.open('imageDB', 1);
+      //   openRequest.onsuccess = () => {
+      //     let db = openRequest.result;
+      //     const txn = db.transaction('Images', 'readwrite');
+      //     const store = txn.objectStore('Images');
+      //     let count = store.count();
+      //     count.onsuccess = () => {
+      //       return count.result;
+      //     }
+      //   }
+      // },
+      loadImagesFromDb() {
+        //this.images = [];
         console.log('asdasd');
-        // let openRequest = indexedDB.open('imageDB', 2);
-        // openRequest.onsuccess = () => {
-        // let db = openRequest.result;
-        // const txn = db.transaction('Images', 'readwrite');
-        // const store = txn.objectStore('Images');
-        // console.log("loadImages");
-        // console.log(store.count());
-        // for (let i = 0; i < store.count(); i++ ){
-        //   let request = store.get(String(i));
-        //   request.onsuccess = () => {
-        //     let blob = request.result;
-        //     console.log(blob);
-        //   }
-        // }
-        
+        let openRequest = indexedDB.open('imageDB', 1);
+        openRequest.onsuccess = () => {
+        let db = openRequest.result;
+        const txn = db.transaction('Images', 'readwrite');
+        const store = txn.objectStore('Images');
+        console.log("loadImages");
+        let count = store.count();
+        count.onsuccess = () => {
+          this.storeImagesCount = count.result;
+          console.log(this.storeImagesCount);
+          for (let i = 0; i < this.storeImagesCount; i++ ){
+            let request = store.get(String(i));
+            request.onsuccess = () => {
+              let blob = request.result;
+              console.log(blob);
+              var imageUrl = URL.createObjectURL(blob);
+              let img = new Image();
+              console.log(img);
+              img.src = imageUrl;
+              this.images.push(img);
+              console.log(this.images);
+            }
+          }
+        }
       
+        
+            
+         
+        
+        }
       },
+      
       loadFit() {
         let openRequest = indexedDB.open('imageDB', 1);
         openRequest.onsuccess = () => {

@@ -13,8 +13,8 @@
       <button @click="next" v-if="inView">Next</button>
       <button @click="outFull" v-if="inView">Выйти</button>
       <button @click="view" v-else>Просмотр</button>
-      <button @click="check">Чек</button>
-      <button @click="loadImagesFromBd">lfl</button>
+      <!-- <button @click="check">Чек</button>
+      <button @click="loadImagesFromBd">lfl</button> -->
 
       <div id="select">
         <select v-model="this.selected" @change="changeSelect">
@@ -58,11 +58,11 @@ export default {
       "insertFit",
       "loadFit",
       "loadImgInBd",
-      "loadImagesFromBd",
+      "loadImagesFromDb",
     ]),
 
     loadImagesFromBd() {
-      this.loadImagesFromBd();
+      this.loadImagesFromDb();
     },
 
     changeSelect() {
@@ -113,6 +113,7 @@ export default {
         this.images.push(await loadImage(i));
         console.log(loadImage(i));
       }
+      this.loadImgInBd();
       console.log(this.images);
     },
 
@@ -179,6 +180,7 @@ export default {
   mounted() {
     this.createDB();
     this.loadFit();
+    this.loadImagesFromDb();
   },
 };
 </script>
