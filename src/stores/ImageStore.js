@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { insertImg } from '../utils'
 
 
 export const useImageStore = defineStore('imageStore', {
@@ -17,12 +18,16 @@ export const useImageStore = defineStore('imageStore', {
         let openRequest = indexedDB.open('imageDB', 1);
         openRequest.onupgradeneeded = function() {
           console.log('onupgradeneeded');
-      
           let db = openRequest.result;
           if (!db.objectStoreNames.contains('Fit')) { 
-              db.createObjectStore('Fit'); 
-              console.log('adas');
+            db.createObjectStore('Fit'); 
+            console.log('adas');
           }
+          if (!db.objectStoreNames.contains('Images')) {
+            db.createObjectStore('Images');
+            console.log('Images created');
+          }
+          db.close();
         };  
         
         openRequest.onerror = function() {
@@ -30,7 +35,7 @@ export const useImageStore = defineStore('imageStore', {
         };
         
         openRequest.onsuccess = function() {
-          let db = openRequest.result;
+          
           console.log("asdad")
         }
       },
@@ -53,6 +58,59 @@ export const useImageStore = defineStore('imageStore', {
           }
         }
       },
+      async loadImgInBd() {
+        this.clearImgStore();
+        let i = 0;
+          for (let img of this.images) {
+            let openRequest = indexedDB.open('imageDB', 1);
+            openRequest.onsuccess = async () => {
+              let db = openRequest.result;
+              
+              let blob =  await insertImg(img);
+              console.log(blob);
+              const txn = db.transaction('Images', 'readwrite');
+              const store = txn.objectStore('Images');
+              let query = store.put(blob, String(i));
+              i++;
+              query.onsuccess = (e) => console.log(e);
+
+              txn.oncomplete = function() {
+                db.close();
+              } 
+
+            }
+        }
+      },
+      clearImgStore() {
+        let openRequest = indexedDB.open('imageDB', 1);
+        openRequest.onsuccess = async () => {
+          let db = openRequest.result;
+          const txn = db.transaction('Images', 'readwrite');
+          const store = txn.objectStore('Images');
+          store.clear();
+          db.close();
+        }
+        
+      },
+      loadImagesFromBd() {
+        console.log('asdasd');
+        // let openRequest = indexedDB.open('imageDB', 2);
+        // openRequest.onsuccess = () => {
+        // let db = openRequest.result;
+        // const txn = db.transaction('Images', 'readwrite');
+        // const store = txn.objectStore('Images');
+        // console.log("loadImages");
+        // console.log(store.count());
+        // for (let i = 0; i < store.count(); i++ ){
+        //   let request = store.get(String(i));
+        //   request.onsuccess = () => {
+        //     let blob = request.result;
+        //     console.log(blob);
+        //   }
+        // }
+        
+      
+      },
       loadFit() {
         let openRequest = indexedDB.open('imageDB', 1);
         openRequest.onsuccess = () => {
@@ -66,14 +124,14 @@ export const useImageStore = defineStore('imageStore', {
           console.log(request.result);
           console.log(this.selected);
         }
-          
+        db.close();
 
         }    
-      }
+      },
     }
    });
 
- //indexedDB.deleteDatabase('imageDB')   
+
 
 // let openRequest = indexedDB.open('imageDB', 1);
 

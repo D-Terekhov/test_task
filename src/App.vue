@@ -14,6 +14,7 @@
       <button @click="outFull" v-if="inView">Выйти</button>
       <button @click="view" v-else>Просмотр</button>
       <button @click="check">Чек</button>
+      <button @click="loadImagesFromBd">lfl</button>
 
       <div id="select">
         <select v-model="this.selected" @change="changeSelect">
@@ -52,14 +53,22 @@ export default {
   },
 
   methods: {
-    ...mapActions(useImageStore, ["createDB", "insertFit", "loadFit"]),
-    // createDB() {
-    //   this.createDB;
-    //   console.log("asdasd");
-    // },
+    ...mapActions(useImageStore, [
+      "createDB",
+      "insertFit",
+      "loadFit",
+      "loadImgInBd",
+      "loadImagesFromBd",
+    ]),
+
+    loadImagesFromBd() {
+      this.loadImagesFromBd();
+    },
+
     changeSelect() {
       this.insertFit(this.selected);
     },
+
     next() {
       this.cureImage++;
       if (this.cureImage > this.countOfImages - 1) {
@@ -102,6 +111,7 @@ export default {
       let files = e.target.files;
       for (let i of files) {
         this.images.push(await loadImage(i));
+        console.log(loadImage(i));
       }
       console.log(this.images);
     },
@@ -163,6 +173,7 @@ export default {
     },
     check() {
       console.log(this.selected);
+      this.loadImgInBd();
     },
   },
   mounted() {
